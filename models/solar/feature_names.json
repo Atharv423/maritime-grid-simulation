@@ -1,0 +1,17 @@
+[
+  "CLRSKY_SFC_SW_DWN",
+  "CLRSKY_SFC_PAR_TOT",
+  "PS",
+  "RH2M",
+  "T2M_MIN",
+  "wind_u",
+  "wind_v",
+  "doy_sin",
+  "doy_cos",
+  "month_sin",
+  "month_cos",
+  "solar_lag1",
+  "solar_lag2",
+  "solar_roll7_mean",
+  "solar_roll7_std"
+]

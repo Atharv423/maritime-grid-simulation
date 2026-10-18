@@ -1,0 +1,16 @@
+[
+  "PS",
+  "delta_PS",
+  "RH2M",
+  "T2M_MIN",
+  "wind_u",
+  "wind_v",
+  "doy_sin",
+  "doy_cos",
+  "month_sin",
+  "month_cos",
+  "ws_lag1",
+  "ws_lag2",
+  "ws_roll7_mean",
+  "ws_roll7_std"
+]

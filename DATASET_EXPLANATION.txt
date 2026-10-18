@@ -1,0 +1,233 @@
+================================================================================
+MARITIME GRID SIMULATION PROJECT - DATASET STRUCTURE & EXPLANATION
+================================================================================
+Generated: 2026-09-23
+Project Root: C:\maritime grids
+
+--------------------------------------------------------------------------------
+1. DIRECTORY STRUCTURE ("WHERE IS WHAT")
+--------------------------------------------------------------------------------
+
+C:\maritime grids\
+│
+├── DATASET_EXPLANATION.txt                     [This document]
+│
+├── POWER_Point_Daily_20200101_20241224_012d72S_002d89E_LST.csv
+│                                               [NASA POWER Solar & Weather time-series]
+│
+└── data\
+    │
+    ├── weather\                                [Target folder for weather data]
+    │                                           (Currently empty pending file assignment)
+    │
+    ├── solar\                                  [Target folder for solar irradiance data]
+    │                                           (Currently empty pending file assignment)
+    │
+    ├── ship\                                   [Vessel operational & fuel efficiency data]
+    │   └── ship_fuel_efficiency.csv            (1,441 vessel operational records)
+    │
+    └── battery\                                [NASA Li-ion battery aging & impedance data]
+        ├── metadata.csv                        (7,566 cycle/test summary records)
+        ├── data\                               (6,209 individual cycle measurement CSVs)
+        │   ├── 00001.csv
+        │   ├── 00002.csv
+        │   └── ... up to 06191.csv
+        └── extra_infos\                        (9 experimental protocol README files)
+            ├── README_05_06_07_18.txt
+            ├── README_25_26_27_28.txt
+            ├── README_29_30_31_32.txt
+            ├── README_33_34_36.txt
+            ├── README_38_39_40.txt
+            ├── README_41_42_43_44.txt
+            ├── README_45_46_47_48.txt
+            ├── README_49_50_51_52.txt
+            └── README_53_54_55_56.txt
+
+
+--------------------------------------------------------------------------------
+2. DETAILED DATASET BREAKDOWN
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+A. SHIP FUEL & EMISSIONS DATASET
+--------------------------------------------------------------------------------
+File Location:
+  data/ship/ship_fuel_efficiency.csv
+
+Overview:
+  Contains monthly operational, routing, fuel consumption, efficiency, and CO2
+  emission profiles for marine vessels operating along commercial maritime
+  shipping corridors in the Gulf of Guinea / Nigerian coastal waters.
+
+Record Count:
+  1,441 records (header + 1,441 data rows)
+
+Columns & Schema:
+  1. ship_id             : Vessel identifier (e.g., NG001, NG002, NG003, ...)
+  2. ship_type           : Category of marine vessel
+                           - Oil Service Boat
+                           - Fishing Trawler
+                           - Surfer Boat
+                           - Tanker Ship
+  3. route_id            : Maritime transit route
+                           - Warri - Bonny
+                           - Port Harcourt - Lagos
+                           - Lagos - Apapa
+                           - Escravos - Lagos
+  4. month               : Operating month (January through December)
+  5. distance            : Travel distance for the voyage (in nautical miles / km)
+  6. fuel_type           : Marine fuel used (HFO = Heavy Fuel Oil, Diesel = Marine Diesel)
+  7. fuel_consumption    : Total fuel consumed during the voyage
+  8. CO2_emissions       : Total carbon dioxide emitted during the transit (kg CO2)
+  9. weather_conditions  : Sea state / ambient weather encountered (Calm, Moderate, Stormy)
+ 10. engine_efficiency   : Percentage efficiency rating of the propulsion engine (e.g. 70% - 95%)
+
+Role in Maritime Grid Simulation:
+  - Establishes base load curves and dynamic power requirements for vessel propulsion.
+  - Enables modeling of hybrid vessel powertrains (replacing or augmenting diesel/HFO
+    with battery banks and solar arrays).
+  - Supplies carbon baseline for calculating emission reductions when utilizing clean
+    energy or port microgrid electrification.
+
+
+--------------------------------------------------------------------------------
+B. BATTERY AGING & DEGRADATION DATASET
+--------------------------------------------------------------------------------
+Folder Location:
+  data/battery/
+
+Overview:
+  Originates from the NASA Ames Prognostics Center of Excellence (PCoE) Li-ion
+  battery aging dataset. Comprises commercial 18650-sized Li-ion cells subjected
+  to repeated charge, discharge, and Electrochemical Impedance Spectroscopy (EIS)
+  tests under controlled ambient temperatures (4°C, 24°C, 43°C/44°C) until reaching
+  End-of-Life (EOL, 30% fade in rated capacity).
+
+Structure:
+  1. metadata.csv:
+     - Master lookup table indexing every charge, discharge, and impedance cycle.
+     - 7,566 total test cycles across battery cells (B0005 through B0056).
+     - Columns:
+       * type                : Cycle type ('charge', 'discharge', 'impedance')
+       * start_time          : Timestamp vector [Year, Month, Day, Hour, Min, Sec]
+       * ambient_temperature : Operating temperature (4, 24, 43, or 44 °C)
+       * battery_id          : Cell identifier (e.g., B0005, B0006, B0047, etc.)
+       * test_id             : Test index sequence for that specific battery
+       * uid                 : Unique global test sequence identifier
+       * filename            : Corresponding detailed time-series CSV file in data/
+       * Capacity            : Measured discharge capacity (Ahr) (discharge cycles only)
+       * Re                  : Electrolyte resistance (Ohms) (impedance cycles only)
+       * Rct                 : Charge transfer resistance (Ohms) (impedance cycles only)
+
+  2. data/ (6,209 CSV files: 00001.csv to 06191.csv):
+     - Raw high-frequency sampling for individual operational cycles:
+       * Charge cycle files:
+         - Voltage_measured (V)
+         - Current_measured (A)
+         - Temperature_measured (°C)
+         - Current_charge (A)
+         - Voltage_charge (V)
+         - Time (seconds elapsed)
+       * Discharge cycle files:
+         - Voltage_measured (V)
+         - Current_measured (A)
+         - Temperature_measured (°C)
+         - Current_charge / load (A)
+         - Voltage_charge / load (V)
+         - Time (seconds elapsed)
+         - Capacity (Ahr)
+       * Impedance cycle files:
+         - Sense_current (complex number)
+         - Battery_current (complex number)
+         - Current_ratio (complex number)
+         - Battery_impedance (complex frequency response, Ohms)
+         - Rectified_Impedance (calibrated impedance, Ohms)
+
+  3. extra_infos/ (9 README files):
+     - Technical specification and test protocols for each batch of cells:
+       * README_05_06_07_18.txt   : Cells 5, 6, 7, 18 (24°C room temp, CC-CV charge, 2A discharge)
+       * README_25_26_27_28.txt   : Cells 25-28 (24°C, 0.05Hz square-wave pulsed discharge)
+       * README_29_30_31_32.txt   : Cells 29-32 (43°C elevated temp, 4A discharge)
+       * README_33_34_36.txt      : Cells 33, 34, 36 (24°C, 4A and 2A discharge to 20% fade)
+       * README_38_39_40.txt      : Cells 38, 39, 40 (Variable temps 24°C & 44°C, 1A-4A loads)
+       * README_41_42_43_44.txt   : Cells 41-44 (4°C low temp, 4A & 1A loads)
+       * README_45_46_47_48.txt   : Cells 45-48 (4°C low temp, 1A constant load)
+       * README_49_50_51_52.txt   : Cells 49-52 (4°C low temp, 2A constant load)
+       * README_53_54_55_56.txt   : Cells 53-56 (4°C low temp, 2A constant load)
+
+Role in Maritime Grid Simulation:
+  - Models Battery Energy Storage System (BESS) performance and State-of-Charge (SOC).
+  - Models battery thermal dynamics and capacity degradation (State-of-Health, SOH).
+  - Simulates dynamic battery charging from solar PV and onboard diesel generators,
+    as well as high-draw discharge during vessel maneuvering and peak load conditions.
+
+
+--------------------------------------------------------------------------------
+C. ENVIRONMENTAL, SOLAR & METEOROLOGICAL DATASET
+--------------------------------------------------------------------------------
+File Location:
+  POWER_Point_Daily_20200101_20241224_012d72S_002d89E_LST.csv
+  (Currently in project root)
+
+Overview:
+  Derived from NASA's POWER (Prediction Of Worldwide Energy Resources) database.
+  Provides daily temporal resolution meteorological and solar irradiance data
+  spanning 5 full years (January 1, 2020 through December 24, 2024; 1,821 daily rows)
+  for latitude -12.7248 S, longitude 2.8868 E (South Atlantic / West African maritime zone).
+
+Variables Present:
+  1. Date Identifiers:
+     - YEAR, MO, DY : Calendar year, month, and day.
+
+  2. Atmospheric & Weather Variables:
+     - PS             : Surface Pressure (kPa)
+     - WD10M, WD50M   : Wind Direction at 10 meters and 50 meters (degrees)
+     - WS10M          : Wind Speed at 10 meters (m/s)
+     - WS10M_MIN      : Minimum Wind Speed at 10 meters (m/s)
+     - WS10M_MAX      : Maximum Wind Speed at 10 meters (m/s)
+     - WS10M_RANGE    : Daily Wind Speed range at 10 meters (m/s)
+     - WS50M_MIN      : Minimum Wind Speed at 50 meters (m/s)
+     - WS50M_MAX      : Maximum Wind Speed at 50 meters (m/s)
+     - WS50M_RANGE    : Daily Wind Speed range at 50 meters (m/s)
+     - WS2M           : Wind Speed at 2 meters (m/s)
+     - RH2M           : Relative Humidity at 2 meters (%)
+     - T2M_MIN        : Minimum Temperature at 2 meters (°C)
+
+  3. Solar Radiation & Irradiance Variables:
+     - ALLSKY_SFC_SW_DWN  : All-Sky Surface Shortwave Downward Irradiance (kW-hr/m^2/day)
+     - CLRSKY_SFC_SW_DWN  : Clear-Sky Surface Shortwave Downward Irradiance (kW-hr/m^2/day)
+     - ALLSKY_SFC_SW_DNI  : All-Sky Surface Shortwave Direct Normal Irradiance (kW-hr/m^2/day)
+     - ALLSKY_SFC_LW_DWN  : All-Sky Surface Longwave Downward Irradiance (kW-hr/m^2/day)
+     - CLRSKY_SFC_PAR_TOT : Clear-Sky Surface Total Photosynthetically Active Radiation (kW-hr/m^2/day)
+     - ALLSKY_SFC_PAR_TOT : All-Sky Surface Total Photosynthetically Active Radiation (kW-hr/m^2/day)
+
+Role in Maritime Grid Simulation:
+  - Solar Irradiance: Drives the Photovoltaic (PV) power generation curves for vessel-mounted
+    or floating/port solar installations.
+  - Wind Speed & Direction: Supports maritime aerodynamic drag calculations, wave/weather
+    impact on vessel transit resistance, and potential offshore wind turbine generation.
+  - Temperature & Humidity: Influences solar PV panel efficiency (derating factors) and
+    ambient cooling/heating performance of BESS battery enclosures.
+
+Current Status & Destination:
+  Because this single dataset unites both Atmospheric Weather and Solar Irradiance
+  parameters, it can either:
+    1. Be placed in data/solar/ (if treated primarily as solar generation resource data)
+    2. Be placed in data/weather/ (if treated as maritime atmospheric climate data)
+    3. Be split into separate columns for data/solar/ and data/weather/
+    4. Be linked/copied to both directories
+  Per your instructions, it remains in the root until your preferred placement is clarified.
+
+
+--------------------------------------------------------------------------------
+3. SUMMARY MATRIX
+--------------------------------------------------------------------------------
+
+Component  | Primary Path                     | Record Count | Primary Data Type
+-----------+----------------------------------+--------------+----------------------------------
+Ship       | data/ship/                       | 1,441 rows   | Vessel fuel, routes, engine eff.
+Battery    | data/battery/                    | 7,566 cycles | Cell degradation, capacity, EIS
+Solar      | data/solar/ (Target)             | Pending      | Shortwave & DNI irradiance
+Weather    | data/weather/ (Target)           | Pending      | Wind, temperature, pressure
+Combined   | Root (POWER_Point_Daily_*.csv)   | 1,821 days   | Dual solar & weather series
+================================================================================

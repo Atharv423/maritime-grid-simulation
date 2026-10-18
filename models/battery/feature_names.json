@@ -1,0 +1,15 @@
+[
+  "cycle",
+  "ambient_temperature",
+  "v_mean",
+  "v_min",
+  "v_max",
+  "v_drop",
+  "temp_mean",
+  "temp_max",
+  "temp_rise",
+  "duration",
+  "energy_wh",
+  "cap_lag1",
+  "cap_lag2"
+]

@@ -1,0 +1,21 @@
+[
+  "distance",
+  "engine_efficiency",
+  "month_num",
+  "month_sin",
+  "month_cos",
+  "dist_eff_ratio",
+  "ship_type_Fishing Trawler",
+  "ship_type_Oil Service Boat",
+  "ship_type_Surfer Boat",
+  "ship_type_Tanker Ship",
+  "route_id_Escravos-Lagos",
+  "route_id_Lagos-Apapa",
+  "route_id_Port Harcourt-Lagos",
+  "route_id_Warri-Bonny",
+  "fuel_type_Diesel",
+  "fuel_type_HFO",
+  "weather_conditions_Calm",
+  "weather_conditions_Moderate",
+  "weather_conditions_Stormy"
+]
